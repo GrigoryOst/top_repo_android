@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_edit_text"
+        android:title="Редактировать текст"
+        android:icon="@drawable/baseline_edit_24"
+        android:orderInCategory="100"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_show_alert"
+        android:title="Вызов оповещения"
+        android:icon="@drawable/baseline_add_alert_24"
+        android:orderInCategory="100"
+        app:showAsAction="always" />
+</menu>
+
