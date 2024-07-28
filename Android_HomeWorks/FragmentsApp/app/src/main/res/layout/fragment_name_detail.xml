@@ -1,0 +1,31 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- TextView для отображения имени -->
+    <TextView
+        android:id="@+id/nameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <!-- TextView для отображения значения имени -->
+    <TextView
+        android:id="@+id/meaningTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nameTextView"
+        android:layout_marginTop="16dp"
+        android:textSize="18sp" />
+
+    <!-- TextView для отображения дат именин -->
+    <TextView
+        android:id="@+id/datesTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/meaningTextView"
+        android:layout_marginTop="16dp"
+        android:textSize="18sp" />
+</RelativeLayout>
