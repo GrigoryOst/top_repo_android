@@ -1,0 +1,26 @@
+-- Создание таблицы Lists
+CREATE TABLE Lists (
+    _id INT PRIMARY KEY IDENTITY(1,1), -- Автоматическая инкрементация идентификатора
+    name NVARCHAR(255) NOT NULL,       -- Название списка, обязательное поле
+    date BIGINT NOT NULL,              -- Дата в формате Unix Time, обязательное поле
+    description NVARCHAR(MAX)          -- Описание списка, необязательное поле
+);
+
+-- Создание таблицы Type
+CREATE TABLE Type (
+    _id INT PRIMARY KEY IDENTITY(1,1), -- Автоматическая инкрементация идентификатора
+    label NVARCHAR(50) NOT NULL,       -- Метка типа, обязательное поле
+    [rule] NVARCHAR(50) NOT NULL       -- Правило для единицы измерения, обязательное поле (имя экранировано)
+);
+
+-- Создание таблицы Product
+CREATE TABLE Product (
+    _id INT PRIMARY KEY IDENTITY(1,1), -- Автоматическая инкрементация идентификатора
+    name NVARCHAR(255) NOT NULL,       -- Название продукта, обязательное поле
+    count FLOAT NOT NULL,              -- Количество продукта, обязательное поле
+    list_id INT NOT NULL,              -- Внешний ключ на таблицу Lists
+    checked BIT NOT NULL,              -- Флаг, отмеченный ли продукт, обязательное поле
+    count_type INT NOT NULL,           -- Внешний ключ на таблицу Type
+    FOREIGN KEY (list_id) REFERENCES Lists(_id),       -- Связь с таблицей Lists
+    FOREIGN KEY (count_type) REFERENCES Type(_id)      -- Связь с таблицей Type
+);
