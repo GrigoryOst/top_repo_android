@@ -1,0 +1,36 @@
+Тема: Основы взаимодействия с MicrosoftSQL Server.
+
+1. Создание таблицы Groups
+
+CREATE TABLE Groups (
+    Id INT PRIMARY KEY IDENTITY(1,1), -- Уникальный идентификатор с автоинкрементом
+    Name NVARCHAR(10) NOT NULL UNIQUE CHECK(Name <> ''), -- Название группы (не может быть пустым)
+    Rating INT NOT NULL CHECK(Rating BETWEEN 0 AND 5), -- Рейтинг группы (от 0 до 5)
+    Year INT NOT NULL CHECK(Year BETWEEN 1 AND 5) -- Курс (от 1 до 5)
+);
+
+2. Создание таблицы Departments
+
+CREATE TABLE Departments (
+    Id INT PRIMARY KEY IDENTITY(1,1), -- Уникальный идентификатор с автоинкрементом
+    Financing MONEY NOT NULL CHECK(Financing >= 0) DEFAULT 0, -- Финансирование кафедры (не может быть меньше 0, по умолчанию 0)
+    Name NVARCHAR(100) NOT NULL UNIQUE CHECK(Name <> '') -- Название кафедры (не может быть пустым)
+);
+
+3. Создание таблицы Faculties
+
+CREATE TABLE Faculties (
+    Id INT PRIMARY KEY IDENTITY(1,1), -- Уникальный идентификатор с автоинкрементом
+    Name NVARCHAR(100) NOT NULL UNIQUE CHECK(Name <> '') -- Название факультета (не может быть пустым)
+);
+
+4. Создание таблицы Teachers
+
+CREATE TABLE Teachers (
+    Id INT PRIMARY KEY IDENTITY(1,1), -- Уникальный идентификатор с автоинкрементом
+    EmploymentDate DATE NOT NULL CHECK(EmploymentDate >= '1990-01-01'), -- Дата трудоустройства (не раньше 1990 года)
+    Name NVARCHAR(MAX) NOT NULL CHECK(Name <> ''), -- Имя преподавателя (не может быть пустым)
+    Surname NVARCHAR(MAX) NOT NULL CHECK(Surname <> ''), -- Фамилия преподавателя (не может быть пустой)
+    Premium MONEY NOT NULL CHECK(Premium >= 0) DEFAULT 0, -- Надбавка (не может быть меньше 0, по умолчанию 0)
+    Salary MONEY NOT NULL CHECK(Salary > 0) -- Ставка (должна быть больше 0)
+);
