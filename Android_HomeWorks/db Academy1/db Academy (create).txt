@@ -1,0 +1,82 @@
+-- Таблица "Curators" (Кураторы)
+CREATE TABLE Curators (
+    Id INT PRIMARY KEY IDENTITY(1,1),  -- Уникальный идентификатор куратора
+    Name NVARCHAR(MAX) NOT NULL,        -- Имя куратора
+    Surname NVARCHAR(MAX) NOT NULL      -- Фамилия куратора
+);
+GO
+
+-- Таблица "Faculties" (Факультеты)
+CREATE TABLE Faculties (
+    Id INT PRIMARY KEY IDENTITY(1,1),  -- Уникальный идентификатор факультета
+    Financing MONEY NOT NULL CHECK (Financing >= 0) DEFAULT 0,  -- Фонд финансирования факультета
+    Name NVARCHAR(100) NOT NULL UNIQUE -- Название факультета (уникальное)
+);
+GO
+
+-- Таблица "Departments" (Кафедры)
+CREATE TABLE Departments (
+    Id INT PRIMARY KEY IDENTITY(1,1),  -- Уникальный идентификатор кафедры
+    Financing MONEY NOT NULL CHECK (Financing >= 0) DEFAULT 0,  -- Фонд финансирования кафедры
+    Name NVARCHAR(100) NOT NULL UNIQUE,  -- Название кафедры (уникальное)
+    FacultyId INT NOT NULL,              -- Идентификатор факультета (внешний ключ)
+    CONSTRAINT FK_Department_Faculty FOREIGN KEY (FacultyId) REFERENCES Faculties(Id)
+);
+GO
+
+-- Таблица "Groups" (Группы)
+CREATE TABLE Groups (
+    Id INT PRIMARY KEY IDENTITY(1,1),  -- Уникальный идентификатор группы
+    Name NVARCHAR(10) NOT NULL UNIQUE, -- Название группы (уникальное)
+    Year INT NOT NULL CHECK (Year BETWEEN 1 AND 5),  -- Курс (год) обучения (от 1 до 5)
+    DepartmentId INT NOT NULL,          -- Идентификатор кафедры (внешний ключ)
+    CONSTRAINT FK_Group_Department FOREIGN KEY (DepartmentId) REFERENCES Departments(Id)
+);
+GO
+
+-- Таблица "GroupsCurators" (Группы и кураторы)
+CREATE TABLE GroupsCurators (
+    Id INT PRIMARY KEY IDENTITY(1,1),  -- Уникальный идентификатор
+    CuratorId INT NOT NULL,            -- Идентификатор куратора (внешний ключ)
+    GroupId INT NOT NULL,              -- Идентификатор группы (внешний ключ)
+    CONSTRAINT FK_GroupsCurators_Curator FOREIGN KEY (CuratorId) REFERENCES Curators(Id),
+    CONSTRAINT FK_GroupsCurators_Group FOREIGN KEY (GroupId) REFERENCES Groups(Id)
+);
+GO
+
+-- Таблица "Subjects" (Дисциплины)
+CREATE TABLE Subjects (
+    Id INT PRIMARY KEY IDENTITY(1,1),  -- Уникальный идентификатор дисциплины
+    Name NVARCHAR(100) NOT NULL UNIQUE -- Название дисциплины (уникальное)
+);
+GO
+
+-- Таблица "Teachers" (Преподаватели)
+CREATE TABLE Teachers (
+    Id INT PRIMARY KEY IDENTITY(1,1),  -- Уникальный идентификатор преподавателя
+    Name NVARCHAR(MAX) NOT NULL,       -- Имя преподавателя
+    Surname NVARCHAR(MAX) NOT NULL,    -- Фамилия преподавателя
+    Salary MONEY NOT NULL CHECK (Salary > 0)  -- Ставка преподавателя
+);
+GO
+
+-- Таблица "Lectures" (Лекции)
+CREATE TABLE Lectures (
+    Id INT PRIMARY KEY IDENTITY(1,1),  -- Уникальный идентификатор лекции
+    LectureRoom NVARCHAR(MAX) NOT NULL,  -- Аудитория
+    SubjectId INT NOT NULL,              -- Идентификатор дисциплины (внешний ключ)
+    TeacherId INT NOT NULL,              -- Идентификатор преподавателя (внешний ключ)
+    CONSTRAINT FK_Lecture_Subject FOREIGN KEY (SubjectId) REFERENCES Subjects(Id),
+    CONSTRAINT FK_Lecture_Teacher FOREIGN KEY (TeacherId) REFERENCES Teachers(Id)
+);
+GO
+
+-- Таблица "GroupsLectures" (Группы и лекции)
+CREATE TABLE GroupsLectures (
+    Id INT PRIMARY KEY IDENTITY(1,1),  -- Уникальный идентификатор
+    GroupId INT NOT NULL,              -- Идентификатор группы (внешний ключ)
+    LectureId INT NOT NULL,            -- Идентификатор лекции (внешний ключ)
+    CONSTRAINT FK_GroupsLectures_Group FOREIGN KEY (GroupId) REFERENCES Groups(Id),
+    CONSTRAINT FK_GroupsLectures_Lecture FOREIGN KEY (LectureId) REFERENCES Lectures(Id)
+);
+GO
