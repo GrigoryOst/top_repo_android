@@ -1,0 +1,95 @@
+1. Количество преподавателей кафедры “Software Development”:
+
+SELECT COUNT(T.Id) AS TeacherCount
+FROM Teachers T
+JOIN Lectures L ON T.Id = L.TeacherId
+JOIN Subjects S ON L.SubjectId = S.Id
+JOIN Departments D ON D.Id = (SELECT Id FROM Departments WHERE Name = 'Software Development');
+
+2. Количество лекций, которые читает преподаватель “Dave McQueen”:
+
+SELECT COUNT(L.Id) AS LectureCount
+FROM Lectures L
+JOIN Teachers T ON L.TeacherId = T.Id
+WHERE T.Name = 'Dave' AND T.Surname = 'McQueen';
+
+3. Количество занятий, проводимых в аудитории “D201”:
+
+SELECT COUNT(L.Id) AS LectureCount
+FROM Lectures L
+WHERE L.LectureRoom = 'D201';
+
+4. Названия аудиторий и количество лекций, проводимых в них:
+
+SELECT L.LectureRoom, COUNT(L.Id) AS LectureCount
+FROM Lectures L
+GROUP BY L.LectureRoom;
+
+5. Количество студентов, посещающих лекции преподавателя “Jack Underhill”:
+
+SELECT COUNT(DISTINCT GL.GroupId) AS StudentCount
+FROM Lectures L
+JOIN Teachers T ON L.TeacherId = T.Id
+JOIN GroupsLectures GL ON GL.LectureId = L.Id
+JOIN Groups G ON GL.GroupId = G.Id
+WHERE T.Name = 'Jack' AND T.Surname = 'Underhill';
+
+6. Средняя ставка преподавателей факультета “Computer Science”:
+
+SELECT AVG(T.Salary) AS AverageSalary
+FROM Teachers T
+JOIN Lectures L ON T.Id = L.TeacherId
+JOIN Departments D ON L.SubjectId = D.Id
+JOIN Faculties F ON D.FacultyId = F.Id
+WHERE F.Name = 'Computer Science';
+
+7. Минимальное и максимальное количество студентов среди всех групп:
+
+SELECT MIN(StudentCount) AS MinStudents, MAX(StudentCount) AS MaxStudents
+FROM (
+    SELECT COUNT(GL.GroupId) AS StudentCount
+    FROM Groups G
+    JOIN GroupsLectures GL ON G.Id = GL.GroupId
+    GROUP BY GL.GroupId
+) AS StudentCounts;
+
+8. Средний фонд финансирования кафедр:
+
+SELECT AVG(D.Financing) AS AverageFinancing
+FROM Departments D;
+
+9. Полные имена преподавателей и количество читаемых ими дисциплин:
+
+SELECT T.Name, T.Surname, COUNT(DISTINCT L.SubjectId) AS SubjectCount
+FROM Teachers T
+JOIN Lectures L ON T.Id = L.TeacherId
+GROUP BY T.Name, T.Surname;
+
+10. Количество лекций в каждый день недели:
+
+SELECT L.DayOfWeek, COUNT(L.Id) AS LectureCount
+FROM Lectures L
+GROUP BY L.DayOfWeek;
+
+11. Номера аудиторий и количество кафедр, чьи лекции в них читаются:
+
+SELECT L.LectureRoom, COUNT(DISTINCT D.Id) AS DepartmentCount
+FROM Lectures L
+JOIN Subjects S ON L.SubjectId = S.Id
+JOIN Departments D ON D.Id = (SELECT Id FROM Departments WHERE D.Id = S.Id)
+GROUP BY L.LectureRoom;
+
+12. Названия факультетов и количество дисциплин, которые на них читаются:
+
+SELECT F.Name, COUNT(DISTINCT S.Id) AS SubjectCount
+FROM Faculties F
+JOIN Departments D ON F.Id = D.FacultyId
+JOIN Subjects S ON D.Id = S.Id
+GROUP BY F.Name;
+
+13. Количество лекций для каждой пары преподаватель-аудитория:
+
+SELECT T.Name, T.Surname, L.LectureRoom, COUNT(L.Id) AS LectureCount
+FROM Lectures L
+JOIN Teachers T ON L.TeacherId = T.Id
+GROUP BY T.Name, T.Surname, L.LectureRoom;

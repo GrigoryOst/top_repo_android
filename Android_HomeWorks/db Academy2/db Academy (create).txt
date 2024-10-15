@@ -1,0 +1,65 @@
+-- Таблица "Faculties" (Факультеты)
+-- Содержит информацию о факультетах академии, включая уникальный идентификатор и название факультета
+CREATE TABLE Faculties (
+    Id INT IDENTITY(1,1) PRIMARY KEY,  -- Уникальный идентификатор факультета, автоинкремент
+    Name NVARCHAR(100) NOT NULL UNIQUE  -- Название факультета, не может быть NULL, должно быть уникальным
+);
+GO
+
+-- Таблица "Departments" (Кафедры)
+-- Хранит информацию о кафедрах, включая идентификатор, финансирование, название и ссылку на факультет
+CREATE TABLE Departments (
+    Id INT IDENTITY(1,1) PRIMARY KEY,  -- Уникальный идентификатор кафедры, автоинкремент
+    Financing MONEY NOT NULL CHECK (Financing >= 0) DEFAULT 0,  -- Финансирование кафедры, должно быть >= 0, значение по умолчанию 0
+    Name NVARCHAR(100) NOT NULL UNIQUE,  -- Название кафедры, не может быть NULL, должно быть уникальным
+    FacultyId INT NOT NULL FOREIGN KEY REFERENCES Faculties(Id)  -- Внешний ключ на таблицу Faculties, указывает, к какому факультету относится кафедра
+);
+GO
+
+-- Таблица "Teachers" (Преподаватели)
+-- Содержит информацию о преподавателях, включая имя, фамилию и зарплату
+CREATE TABLE Teachers (
+    Id INT IDENTITY(1,1) PRIMARY KEY,  -- Уникальный идентификатор преподавателя, автоинкремент
+    Name NVARCHAR(MAX) NOT NULL,  -- Имя преподавателя, не может быть NULL
+    Surname NVARCHAR(MAX) NOT NULL,  -- Фамилия преподавателя, не может быть NULL
+    Salary MONEY NOT NULL CHECK (Salary > 0)  -- Зарплата преподавателя, должна быть больше 0
+);
+GO
+
+-- Таблица "Subjects" (Дисциплины)
+-- Хранит информацию о дисциплинах, по которым проводятся лекции
+CREATE TABLE Subjects (
+    Id INT IDENTITY(1,1) PRIMARY KEY,  -- Уникальный идентификатор дисциплины, автоинкремент
+    Name NVARCHAR(100) NOT NULL UNIQUE  -- Название дисциплины, не может быть NULL, должно быть уникальным
+);
+GO
+
+-- Таблица "Groups" (Группы)
+-- Хранит информацию о студенческих группах, включая их название, курс и кафедру
+CREATE TABLE Groups (
+    Id INT IDENTITY(1,1) PRIMARY KEY,  -- Уникальный идентификатор группы, автоинкремент
+    Name NVARCHAR(10) NOT NULL UNIQUE,  -- Название группы, не может быть NULL, должно быть уникальным
+    Year INT NOT NULL CHECK (Year BETWEEN 1 AND 5),  -- Курс (год обучения), должен быть в диапазоне от 1 до 5
+    DepartmentId INT NOT NULL FOREIGN KEY REFERENCES Departments(Id)  -- Внешний ключ на таблицу Departments, указывает, к какой кафедре относится группа
+);
+GO
+
+-- Таблица "Lectures" (Лекции)
+-- Хранит информацию о лекциях, включая день недели, аудиторию, дисциплину и преподавателя
+CREATE TABLE Lectures (
+    Id INT IDENTITY(1,1) PRIMARY KEY,  -- Уникальный идентификатор лекции, автоинкремент
+    DayOfWeek INT NOT NULL CHECK (DayOfWeek BETWEEN 1 AND 7),  -- День недели, в который проводится лекция (1-7)
+    LectureRoom NVARCHAR(MAX) NOT NULL,  -- Аудитория, в которой проводится лекция, не может быть NULL
+    SubjectId INT NOT NULL FOREIGN KEY REFERENCES Subjects(Id),  -- Внешний ключ на таблицу Subjects, указывает на дисциплину
+    TeacherId INT NOT NULL FOREIGN KEY REFERENCES Teachers(Id)  -- Внешний ключ на таблицу Teachers, указывает на преподавателя, читающего лекцию
+);
+GO
+
+-- Таблица "GroupsLectures" (Группы и Лекции)
+-- Связывает студенческие группы с лекциями, которые они посещают
+CREATE TABLE GroupsLectures (
+    Id INT IDENTITY(1,1) PRIMARY KEY,  -- Уникальный идентификатор связи группы и лекции, автоинкремент
+    GroupId INT NOT NULL FOREIGN KEY REFERENCES Groups(Id),  -- Внешний ключ на таблицу Groups, указывает на группу
+    LectureId INT NOT NULL FOREIGN KEY REFERENCES Lectures(Id)  -- Внешний ключ на таблицу Lectures, указывает на лекцию
+);
+GO
